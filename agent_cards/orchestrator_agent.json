@@ -1,0 +1,36 @@
+{
+    "name": "Orchestrator Agent",
+    "description": "Orchestrates the task generation and execution. タスクの生成と実行を調整します。旅行計画を実行します。",
+    "url": "http://localhost:10101/",
+    "version": "1.0.0",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "defaultInputModes": [
+        "text",
+        "text/plain"
+    ],
+    "defaultOutputModes": [
+        "text",
+        "text/plain"
+    ],
+    "skills": [
+        {
+            "id": "executor",
+            "name": "Task Executor",
+            "description": "Orchestrates the task generation and execution, takes help from the planner to generate tasks. タスクの生成と実行を調整し、プランナーの助けを借りてタスクを生成します。",
+            "tags": [
+                "execute plan",
+                "旅行実行",
+                "予約実行"
+            ],
+            "examples": [
+                "Plan my trip to London, submit an expense report",
+                "フランスへの旅行を計画して実行したい",
+                "東京からパリへの旅行を予約したい"
+            ]
+        }
+    ]
+}

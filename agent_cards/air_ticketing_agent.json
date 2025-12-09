@@ -1,0 +1,36 @@
+{
+    "name": "Air Ticketing Agent",
+    "description": "Helps book air tickets given a criteria. 条件に基づいて航空券を予約します。",
+    "url": "http://localhost:10103/",
+    "version": "1.0.0",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "defaultInputModes": [
+        "text",
+        "text/plain"
+    ],
+    "defaultOutputModes": [
+        "text",
+        "text/plain"
+    ],
+    "skills": [
+        {
+            "id": "book_air_tickets",
+            "name": "Book Air Tickets",
+            "description": "Helps with booking air tickets given a criteria. 条件に基づいて航空券の予約をサポートします。",
+            "tags": [
+                "Book air tickets",
+                "航空券予約",
+                "フライト予約"
+            ],
+            "examples": [
+                "Book return tickets from SFO to LHR, starting June 24 2025 and returning 30th June 2025",
+                "東京からパリへの往復チケットを予約したい",
+                "成田空港からパリへの航空券を予約したい"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+{
+    "name": "Hotel Booking Agent",
+    "description": "Helps book hotels given a criteria. 条件に基づいてホテルを予約します。",
+    "url": "http://localhost:10104/",
+    "version": "1.0.0",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "defaultInputModes": [
+        "text",
+        "text/plain"
+    ],
+    "defaultOutputModes": [
+        "text",
+        "text/plain"
+    ],
+    "skills": [
+        {
+            "id": "book_accommodation",
+            "name": "Book Hotels",
+            "description": "Helps with booking hotels given a criteria. 条件に基づいてホテルの予約をサポートします。",
+            "tags": [
+                "Book accommodation",
+                "ホテル予約",
+                "宿泊予約"
+            ],
+            "examples": [
+                "Book a hotel for 1 adult in Central London, starting June 24 2025 for 2 nights",
+                "パリのホテルを予約したい",
+                "ロンドンの中央部で1泊のホテルを予約したい"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+{
+    "name": "Car Rental Agent",
+    "description": "Helps book car rental. レンタカーの予約をサポートします。",
+    "url": "http://localhost:10105/",
+    "version": "1.0.0",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "defaultInputModes": [
+        "text",
+        "text/plain"
+    ],
+    "defaultOutputModes": [
+        "text",
+        "text/plain"
+    ],
+    "skills": [
+        {
+            "id": "book_cars",
+            "name": "Book Car Rental",
+            "description": "Helps with booking car rental given a criteria. 条件に基づいてレンタカーの予約をサポートします。",
+            "tags": [
+                "Book cars",
+                "レンタカー予約",
+                "車予約"
+            ],
+            "examples": [
+                "Book a rental car in London, starting on June 20, 2025, and ending on July 10, 2025",
+                "パリでレンタカーを予約したい",
+                "ロンドンでSUVタイプのレンタカーを予約したい"
+            ]
+        }
+    ]
+}

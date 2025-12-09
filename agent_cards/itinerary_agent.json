@@ -1,0 +1,37 @@
+{
+    "name": "Itinerary Generation Agent",
+    "description": "Collects all booking results and generates a comprehensive markdown itinerary. すべての予約結果を収集し、包括的なマークダウン形式の旅程表を生成します。",
+    "url": "http://localhost:10106/",
+    "version": "1.0.0",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "defaultInputModes": [
+        "text",
+        "text/plain"
+    ],
+    "defaultOutputModes": [
+        "text",
+        "text/plain"
+    ],
+    "skills": [
+        {
+            "id": "generate_itinerary",
+            "name": "Generate Itinerary",
+            "description": "Generates a comprehensive markdown itinerary from all booking results. すべての予約結果から包括的なマークダウン形式の旅程表を生成します。",
+            "tags": [
+                "itinerary",
+                "旅程表",
+                "旅行計画",
+                "まとめ"
+            ],
+            "examples": [
+                "Generate itinerary from booking results",
+                "予約結果から旅程表を生成してください",
+                "すべての予約結果をまとめて旅程表を作成してください"
+            ]
+        }
+    ]
+}
