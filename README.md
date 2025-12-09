@@ -1,111 +1,115 @@
-# A2A with MCP as Registry
+# A2A with MCP as Registry（MCPをレジストリとして使用するA2A）
 
-**Leveraging Model Context Protocol (MCP) as a standardized mechanism for discovering and retrieving Google A2A Agent Cards, enabling dynamic agent interaction using A2A.**
+**Model Context Protocol (MCP) を標準化されたメカニズムとして活用し、Google A2A Agent Cards を発見・取得することで、A2Aを使用した動的なエージェント間相互作用を実現します。**
 
-## Table of Contents
+## 目次
 
 - [A2A with MCP as Registry](#a2a-with-mcp-as-registry)
-  - [Table of Contents](#table-of-contents)
-  - [Objective](#objective)
-  - [Background](#background)
-    - [A2A Protocol](#a2a-protocol)
+  - [目次](#目次)
+  - [目的](#目的)
+  - [背景](#背景)
+    - [A2Aプロトコル](#a2aプロトコル)
     - [Model Context Protocol (MCP)](#model-context-protocol-mcp)
-  - [Core Proposal](#core-proposal)
-    - [Storing Agent Cards](#storing-agent-cards)
-    - [Discovering Agents via MCP](#discovering-agents-via-mcp)
-    - [Retrieving Agent Cards](#retrieving-agent-cards)
-    - [Finding an Agent for a Task](#finding-an-agent-for-a-task)
-    - [Initiating A2A Communication](#initiating-a2a-communication)
-  - [Use Case: Orchestrated Task Execution](#use-case-orchestrated-task-execution)
-    - [Core Concepts](#core-concepts)
-    - [Architectural Components](#architectural-components)
-  - [Example Flow: Travel Agent](#example-flow-travel-agent)
-  - [Steps to execute the example](#steps-to-execute-the-example)
-    - [File/Directory Descriptions](#filedirectory-descriptions)
-  - [Disclaimer](#disclaimer)
+  - [コア提案](#コア提案)
+    - [Agent Cardsの保存](#agent-cardsの保存)
+    - [MCP経由でのエージェント発見](#mcp経由でのエージェント発見)
+    - [Agent Cardsの取得](#agent-cardsの取得)
+    - [タスクに適したエージェントの検索](#タスクに適したエージェントの検索)
+    - [A2A通信の開始](#a2a通信の開始)
+  - [ユースケース: オーケストレーションによるタスク実行](#ユースケース-オーケストレーションによるタスク実行)
+    - [コアコンセプト](#コアコンセプト)
+    - [アーキテクチャコンポーネント](#アーキテクチャコンポーネント)
+  - [例: 旅行エージェント](#例-旅行エージェント)
+  - [実行手順](#実行手順)
+    - [ファイル/ディレクトリの説明](#ファイルディレクトリの説明)
+  - [免責事項](#免責事項)
 
-## Objective
+## 目的
 
-To leverage Model Context Protocol (MCP) as a standardized mechanism for discovering and retrieving Google A2A Agent Cards. This enables dynamic agent interaction, particularly for planning and orchestration agents that utilize the A2A protocol.
+Model Context Protocol (MCP) を標準化されたメカニズムとして活用し、Google A2A Agent Cards を発見・取得することです。これにより、特にA2Aプロトコルを利用する計画・オーケストレーションエージェント向けの動的なエージェント間相互作用が可能になります。
 
-## Background
+## 背景
 
-### A2A Protocol
+### A2Aプロトコル
 
-The Agent-to-Agent (A2A) protocol standardizes runtime communication between agents. It defines:
+Agent-to-Agent (A2A) プロトコルは、エージェント間のランタイム通信を標準化します。以下を定義します：
 
-- **Agent Card:** A JSON schema describing an agent's identity, capabilities (actions/functions), and interaction endpoints.
-- **Message Formats & Interaction Flows:** Such as `ExecuteTask` for direct agent-to-agent interaction.
+- **Agent Card:** エージェントの識別情報、機能（アクション/関数）、相互作用エンドポイントを記述するJSONスキーマ。
+- **メッセージ形式と相互作用フロー:** 直接的なエージェント間相互作用のための`ExecuteTask`など。
+
+詳細については、[A2A SDK解説ドキュメント](A2A_SDK_GUIDE.md)を参照してください。
 
 ### Model Context Protocol (MCP)
 
-MCP defines a standard way for applications (including AI models) to discover, access, and utilize contextual information, referred to as "tools", "resources", etc.
+MCPは、アプリケーション（AIモデルを含む）が「ツール」「リソース」などのコンテキスト情報を発見、アクセス、利用するための標準的な方法を定義します。
 
-## Core Proposal
+詳細については、[用語解説集](GLOSSARY.md)を参照してください。
 
-The central idea is to use an MCP server as a centralized, queryable repository for A2A Agent Cards.
+## コア提案
 
-### Storing Agent Cards
+中心的なアイデアは、MCPサーバーをA2A Agent Cardsの集中化された、クエリ可能なリポジトリとして使用することです。
 
-- Each A2A Agent Card (JSON) is stored (e.g., as a JSON file).
-- The MCP server exposes these Agent Cards as resources.
-- The underlying storage system could be a file system, database or even a vector store. This example uses agent cards stored in a file system, generates embeddings and uses them to find matches.
+### Agent Cardsの保存
 
-### Discovering Agents via MCP
+- 各A2A Agent Card（JSON）が保存されます（例：JSONファイルとして）。
+- MCPサーバーはこれらのAgent Cardsをリソースとして公開します。
+- 基盤となるストレージシステムは、ファイルシステム、データベース、またはベクトルストアでも可能です。この例では、ファイルシステムに保存されたエージェントカードを使用し、埋め込みを生成してマッチングを見つけます。
 
-- Clients query the MCP server's resource API (`list_resources`) to discover available agent cards.
-- Filtering can be applied using additional metadata (e.g., `streaming` support, tags like `currency conversion`), though not explicitly covered in this example.
+### MCP経由でのエージェント発見
 
-### Retrieving Agent Cards
+- クライアントはMCPサーバーのリソースAPI（`list_resources`）をクエリして、利用可能なエージェントカードを発見します。
+- 追加のメタデータ（例：`streaming`サポート、`currency conversion`などのタグ）を使用してフィルタリングを適用できますが、この例では明示的にはカバーされていません。
 
-- The requesting agent uses resource URIs (obtained from discovery) to fetch the full JSON Agent Card(s) via the MCP server API.
+### Agent Cardsの取得
 
-### Finding an Agent for a Task
+- リクエストするエージェントは、リソースURI（発見から取得）を使用して、MCPサーバーAPI経由で完全なJSON Agent Card(s)を取得します。
 
-- Requesting agents can use tools exposed on the MCP server to find the most relevant agent for a specific query.
+### タスクに適したエージェントの検索
 
-### Initiating A2A Communication
+- リクエストするエージェントは、MCPサーバーで公開されているツールを使用して、特定のクエリに最も関連性の高いエージェントを見つけることができます。
 
-- Once Agent Card(s) are retrieved, the requesting agent uses them in an A2AClient.
-- Agents (like a Planning Agent) needing collaborators then use the standard A2A protocol to communicate directly with target agents.
-- MCP is not involved in this direct runtime interaction after discovery.
+### A2A通信の開始
 
-## Use Case: Orchestrated Task Execution
+- Agent Card(s)が取得されると、リクエストするエージェントはそれらをA2AClientで使用します。
+- コラボレーターを必要とするエージェント（計画エージェントなど）は、標準のA2Aプロトコルを使用してターゲットエージェントと直接通信します。
+- 発見後、この直接的なランタイム相互作用にはMCPは関与しません。
 
-This system enables a workflow where specialized agents collaborate dynamically.
+## ユースケース: オーケストレーションによるタスク実行
 
-### Core Concepts
+このシステムは、専門化されたエージェントが動的に協力するワークフローを可能にします。
 
-1. **Orchestration:** Planner and Executor agents manage the overall flow of a user query.
-2. **Specialization:** Task Agents are experts in specific types of tasks.
-3. **Dynamic Discovery:** The MCP Server allows for flexible addition, removal, or updates of Task Agents without modifying the Executor.
-4. **Standardized Communication:** The A2A protocol ensures reliable inter-agent communication.
+### コアコンセプト
 
-### Architectural Components
+1. **オーケストレーション:** PlannerとExecutorエージェントがユーザークエリの全体的なフローを管理します。
+2. **専門化:** タスクエージェントは特定の種類のタスクの専門家です。
+3. **動的発見:** MCPサーバーにより、Executorを変更することなく、タスクエージェントの柔軟な追加、削除、更新が可能になります。
+4. **標準化された通信:** A2Aプロトコルにより、信頼性の高いエージェント間通信が保証されます。
 
-1. **User Interface (UI) / Application Gateway:** Entry point for user queries.
-2. **Orchestrator Agent:**
-   - Receives a structured plan from the Planner Agent.
-   - Iterates through tasks.
-   - For each task:
-     - Queries the MCP Server for a suitable Task Agent based task (additionally capabilities).
-     - Connects and sends task details to the Task Agent via A2A.
-     - Receives results from the Task Agent via A2A.
-     - Manages task state and errors.
-   - Validates the results and potentially triggers replanning as needed.
-   - Synthesizes, summarizes, and formats results into a coherent user response.
-3. **Planner Agent:**
-   - Receives the raw user query.
-   - Decomposes the query into a structured plan of tasks (potentially a DAG), specifying required capabilities for each.
-4. **Model Context Protocol (MCP) Server:**
-   - Acts as a registry for Task Agents, hosting their Agent Cards.
-   - Provides an interface for the Executor Agent to query for agents.
-   - Provides an interface for the Executor Agent to query for tools.
-5. **Task Agents (Pool/Fleet):**
-   - Independent, specialized agents (e.g., Search Agent, Calculation Agent).
-   - Expose A2A-compatible endpoints.
-   - Execute tasks and return results to the Executor via A2A.
-6. **A2A Communication Layer:** The underlying protocol for inter-agent communication.
+### アーキテクチャコンポーネント
+
+1. **ユーザーインターフェース (UI) / アプリケーションゲートウェイ:** ユーザークエリのエントリーポイント。
+2. **Orchestrator Agent（オーケストレーターエージェント）:**
+   - Planner Agentから構造化されたプランを受信します。
+   - タスクを反復処理します。
+   - 各タスクについて：
+     - タスク（および追加の機能）に基づいて、MCPサーバーに適切なタスクエージェントをクエリします。
+     - A2A経由でタスクエージェントに接続し、タスクの詳細を送信します。
+     - A2A経由でタスクエージェントから結果を受信します。
+     - タスクの状態とエラーを管理します。
+   - 結果を検証し、必要に応じて再計画をトリガーします。
+   - 結果を統合、要約し、一貫性のあるユーザー応答にフォーマットします。
+3. **Planner Agent（プランナーエージェント）:**
+   - 生のユーザークエリを受信します。
+   - クエリを構造化されたタスクプラン（潜在的にDAG）に分解し、各タスクに必要な機能を指定します。
+4. **Model Context Protocol (MCP) Server（MCPサーバー）:**
+   - タスクエージェントのレジストリとして機能し、そのAgent Cardsをホストします。
+   - Executor Agentがエージェントをクエリするためのインターフェースを提供します。
+   - Executor Agentがツールをクエリするためのインターフェースを提供します。
+5. **Task Agents（タスクエージェントプール/フリート）:**
+   - 独立した、専門化されたエージェント（例：検索エージェント、計算エージェント）。
+   - A2A互換エンドポイントを公開します。
+   - タスクを実行し、A2A経由でExecutorに結果を返します。
+6. **A2A通信レイヤー:** エージェント間通信の基盤となるプロトコル。
 
 ```mermaid
 flowchart LR
@@ -136,148 +140,78 @@ flowchart LR
     classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
 ```
 
-## Example Flow: Travel Agent
+## 例: 旅行エージェント
 
-1. User requests a trip plan.
-2. **Orchestrator Agent** receives the request.
-   1. Looks up the **Planner Agent**'s card via MCP and connects.
-   2. Invokes the Planner Agent to get a detailed plan.
-   3. For each step in the plan:
-      1. Invokes an MCP tool (e.g., `find_agent`) to fetch the Agent Card of the best Task Agent.
-      2. Invokes the selected Task Agent via A2A to execute the task:
-         - _Air Tickets:_ Task Agent will use a helper tool from the MCP server. The tool queries a SQLLite database to find the flights.
-         - _Hotels:_ Task Agent will use a helper tool from the MCP server.
-           The tool queries a SQLLite database to find the hotels.
-         - _Car Rental:_ Task Agent will use a helper tool from the MCP server.
-           The tool queries a SQLLite database to find the rental cars.
-      3. Stores the results in memory
-   4. Aggregates results and summarizes them for the client.
-   5. If the agent discovers budget mismatch or failures in booking, a re-planning task is kicked off.
+1. ユーザーが旅行プランをリクエストします。
+2. **Orchestrator Agent**がリクエストを受信します。
+   1. MCP経由で**Planner Agent**のカードを検索し、接続します。
+   2. Planner Agentを呼び出して詳細なプランを取得します。
+   3. プランの各ステップについて：
+      1. MCPツール（例：`find_agent`）を呼び出して、最適なタスクエージェントのAgent Cardを取得します。
+      2. 選択したタスクエージェントをA2A経由で呼び出してタスクを実行します：
+         - _航空券:_ タスクエージェントはMCPサーバーからヘルパーツールを使用します。ツールはSQLLiteデータベースをクエリしてフライトを見つけます。
+         - _ホテル:_ タスクエージェントはMCPサーバーからヘルパーツールを使用します。
+           ツールはSQLLiteデータベースをクエリしてホテルを見つけます。
+         - _レンタカー:_ タスクエージェントはMCPサーバーからヘルパーツールを使用します。
+           ツールはSQLLiteデータベースをクエリしてレンタカーを見つけます。
+      3. 結果をメモリに保存します
+   4. 結果を集約し、クライアント用に要約します。
+   5. エージェントが予算の不一致や予約の失敗を発見した場合、再計画タスクが開始されます。
 
-## Steps to execute the example
+## 実行手順
 
-This sample is built using 3 ADK agents to execute the tasks and a LangGraph agent that works as a planner.
-All the 3 ADK agents use the same python code but are instantiated with different agent cards.
+このサンプルは、タスクを実行する3つのADKエージェントと、プランナーとして機能するLangGraphエージェントを使用して構築されています。
+3つのADKエージェントはすべて同じPythonコードを使用しますが、異なるエージェントカードでインスタンス化されます。
 
-You can execute the following command to run all of the steps in one terminal:
+以下のコマンドを実行して、1つのターミナルですべてのステップを実行できます：
 
 ```sh
 bash samples/python/agents/a2a_mcp/run.sh
 ```
 
-1. Start the MCP Server:
+詳細な手順については、[動作マニュアル](OPERATION_MANUAL.md)を参照してください。
 
-   ```sh
-   cd samples/python/agents/a2a_mcp
-   uv venv # (if not already done)
-   source .venv/bin/activate
-   # Runs on port 10100 by default, change as needed by setting the --host and --port parameters.
-   uv run  --env-file .env a2a-mcp --run mcp-server --transport sse
-   ```
+### ファイル/ディレクトリの説明
 
-2. Start the Orchestrator Agent:
+- **`agent_cards/`**: 各A2A Agent CardのJSONスキーマを保存するディレクトリ。これらのカードは、システム内の異なるエージェントの識別情報、機能、エンドポイントを定義します。MCPサーバーがこれらのカードを提供します。
 
-   In a new terminal window
+  - `*_agent.json`: 各JSONファイルは、特定のエージェントのカードを表します（例：フライト予約を処理するエージェントの`air_ticketing_agent.json`）。
 
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv # (if not already done)
-   source .venv/bin/activate
-   # Note: Change the host and port as needed.
-   uv run --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/orchestrator_agent.json --port 10101
-   ```
+- **`src/a2a_mcp/`**: このA2A with MCPサンプルの主要なPythonソースコード。
 
-3. Start the Planner Agent:
+  - **`agents/`**: 設計ドキュメントで説明されている異なるタイプのエージェントのPython実装を含みます。
+    - `__main__.py`: エージェントサービスを起動するメインスクリプト。
+    - `adk_travel_agent.py`: ADKを使用して構築されたコア旅行エージェントで、異なるエージェントカードを使用してエージェントをインスタンス化します。
+    - `langgraph_planner_agent.py`: LangGraphを使用した「Planner Agent」の実装で、ユーザーリクエストを構造化されたプランに分解する責任があります。
+    - `orchestrator_agent.py`: 「Orchestrator Agent」の実装で、Plannerからプランを受け取り、MCP経由で適切なタスクエージェントを発見し、A2Aを使用してそれらを呼び出します。
+    - `itinerary_agent.py`: 予約結果から包括的なマークダウン形式の旅程表を生成する独立したエージェント。
+  - **`common/`**: 複数のエージェントまたはシステムの一部で使用される共有コードを保持します。
+    - `agent_executor.py`: オーケストレーションフロー内のタスクの状態、依存関係、実行を管理するA2Aモジュール。
+    - `agent_runner.py`: ADKエージェントインスタンスを実行し、そのライフサイクルを管理し、そのサービスを公開するユーティリティまたはフレームワークコンポーネント。
+    - `base_agent.py`: このプロジェクト内のすべてのエージェントの共通メソッドとプロパティを定義する抽象基底クラスまたはインターフェース。
+    - `prompts.py`: エージェント内でLarge Language Models (LLMs) と相互作用するために使用される事前定義されたプロンプトテンプレートを含みます（例：計画や要約のため）。
+    - `types.py`: プロジェクト全体で使用されるカスタムPythonデータ型、Pydanticモデル、またはEnumsを定義します（例：タスク、エージェントカード構造、またはAPIリクエスト/レスポンスを表すため）。
+    - `utils.py`: 汎用ユーティリティ関数のコレクション。
+    - `workflow.py`: プロセスフローを管理するワークフロー。
+  - **`mcp/`**: Model Context Protocolに関連する実装を含みます。
+    - `client.py`: MCPサーバーにエージェントカードやツールをクエリするために使用されるヘルパーMCPクライアントライブラリ。これはテストユーティリティであり、エージェントでは使用されません。
+    - `server.py`: MCPサーバー自体の実装。このサーバーはエージェントカードをリソースとしてホストします。
+  - **`orchestrator_client.py`**: Orchestrator Agentと対話するためのCLIクライアントアプリケーション。
 
-   In a new terminal window
+- **`travel_agency.db`**: デモデータをホストする軽量なSQLLiteデータベース。
 
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv # (if not already done)
-   source .venv/bin/activate
-   # Note: Change the host and port as needed.
-   uv run  --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/planner_agent.json --port 10102
-   ```
+## 免責事項
 
-4. Start the Airline Ticketing Agent:
+重要: 提供されるサンプルコードはデモンストレーション目的であり、Agent-to-Agent (A2A) プロトコルのメカニクスを示しています。本番アプリケーションを構築する際は、直接制御外で動作するエージェントを潜在的に信頼できないエンティティとして扱うことが重要です。
 
-   In a new terminal window
+外部エージェントから受信したすべてのデータ（AgentCard、メッセージ、アーティファクト、タスクステータスなど）は、信頼できない入力として扱う必要があります。たとえば、悪意のあるエージェントは、フィールド（例：description、name、skills.description）に細工されたデータを含むAgentCardを提供する可能性があります。このデータがサニタイズせずにLarge Language Model (LLM) のプロンプトを構築するために使用される場合、アプリケーションをプロンプトインジェクション攻撃にさらす可能性があります。使用前にこのデータを適切に検証およびサニタイズしないと、アプリケーションにセキュリティの脆弱性が導入される可能性があります。
 
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv # (if not already done)
-   source .venv/bin/activate
-   # Note: Change the host and port as needed.
-   uv run --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/air_ticketing_agent.json --port 10103
-   ```
+開発者は、システムとユーザーを保護するために、入力検証や認証情報の安全な処理などの適切なセキュリティ対策を実装する責任があります。
 
-5. Start the Hotel Reservations Agent:
+## 関連ドキュメント
 
-   In a new terminal window
-
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv # (if not already done)
-   source .venv/bin/activate
-   # Note: Change the host and port as needed.
-   uv run  --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/hotel_booking_agent.json --port 10104
-   ```
-
-6. Start the Car Rental Reservations Agent:
-
-   In a new terminal window
-
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv  # (if not already done)
-   source .venv/bin/activate
-   # Note: Change the host and port as needed.
-   uv run --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/car_rental_agent.json --port 10105
-   ```
-
-7. Start the cli:
-
-   In a new terminal window
-
-   ```bash
-   cd samples/python/agents/a2a_mcp
-   uv venv  # (if not already done)
-   source .venv/bin/activate
-
-   uv run --env-file .env src/a2a_mcp/mcp/client.py --resource "resource://agent_cards/list" --find_agent "I would like to plan a trip to France."
-   ```
-
-
-### File/Directory Descriptions
-
-- **`agent_cards/`**: This directory stores the JSON schemas for each A2A Agent Card. These cards define the identity, capabilities, and endpoints of the different agents in the system. The MCP server serves these cards.
-
-  - `*_agent.json`: Each JSON file represents a specific agent's card (e.g., `air_ticketing_agent.json` for the agent that handles flight bookings).
-
-- **`src/a2a_mcp/`**: The primary Python source code for this A2A with MCP sample.
-
-  - **`agents/`**: Contains the Python implementations of the different types of agents described in the design document.
-    - `__main__.py`: Main script to start up the agent services.
-    - `adk_travel_agent.py`: This is the core travel agent built using ADK, different agent cards are used to instantiate the agent.
-    - `langgraph_planner_agent.py`: The implementation of the "Planner Agent" using LangGraph, responsible for breaking down user requests into structured plans.
-    - `orchestrator_agent.py`: The implementation of the "Orchestrator Agent," which takes the plan from the Planner, discovers appropriate Task Agents via MCP, and invokes them using A2A.
-  - **`common/`**: Holds shared code used by multiple agents or parts of the system.
-    - `agent_executor.py`: An A2A module to manage the state, dependencies, and execution of tasks within the orchestration flow.
-    - `agent_runner.py`: A utility or framework component for running ADK agent instances, managing their lifecycle, and exposing their services.
-    - `base_agent.py`: An abstract base class or interface defining common methods and properties for all agents in this project.
-    - `prompts.py`: Contains predefined prompt templates used for interacting with Large Language Models (LLMs) within the agents (e.g., for planning or summarization).
-    - `types.py`: Defines custom Python data types, Pydantic models, or Enums used across the project (e.g., for representing tasks, agent card structures, or API requests/responses).
-    - `utils.py`: A collection of general-purpose utility functions.
-    - `workflow.py`: Workflow to manage the process flow.
-  - **`mcp/`**: Contains the implementation related to the Model Context Protocol.
-    - `client.py`: A helper MCP client library that used to query the MCP server for agent cards or tools. This is a test utility and not used by the agents.
-    - `server.py`: The implementation of the MCP server itself. This server hosts the agent cards as resources.
-
-- **`travel_agency.db`**: A light weight SQLLite DB that hosts the demo data.
-
-## Disclaimer
-Important: The sample code provided is for demonstration purposes and illustrates the mechanics of the Agent-to-Agent (A2A) protocol. When building production applications, it is critical to treat any agent operating outside of your direct control as a potentially untrusted entity.
-
-All data received from an external agent—including but not limited to its AgentCard, messages, artifacts, and task statuses—should be handled as untrusted input. For example, a malicious agent could provide an AgentCard containing crafted data in its fields (e.g., description, name, skills.description). If this data is used without sanitization to construct prompts for a Large Language Model (LLM), it could expose your application to prompt injection attacks.  Failure to properly validate and sanitize this data before use can introduce security vulnerabilities into your application.
-
-Developers are responsible for implementing appropriate security measures, such as input validation and secure handling of credentials to protect their systems and users.
+- [動作マニュアル](OPERATION_MANUAL.md) - システムの使用方法とトラブルシューティング
+- [用語解説集](GLOSSARY.md) - A2AとMCPの用語解説
+- [FastAPI解説](FASTAPI_GUIDE.md) - FastAPIの概要と使用方法
+- [A2A SDK解説](A2A_SDK_GUIDE.md) - A2A SDKの詳細な解説
+- [セットアップガイド](SETUP.md) - 環境セットアップの詳細手順

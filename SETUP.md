@@ -57,8 +57,9 @@ bash samples/python/agents/a2a_mcp/run.sh
 4. Airline Ticketing Agentの起動（ポート10103）
 5. Hotel Reservations Agentの起動（ポート10104）
 6. Car Rental Reservations Agentの起動（ポート10105）
-7. CLIクライアントの実行
-8. 終了時の自動クリーンアップ
+7. Itinerary Agentの起動（ポート10106）
+8. CLIクライアントの実行
+9. 終了時の自動クリーンアップ
 
 ### 方法2: 手動で各サービスを起動
 
@@ -111,7 +112,15 @@ source .venv/bin/activate
 uv run --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/car_rental_agent.json --port 10105
 ```
 
-#### ステップ7: CLIクライアントの実行（新しいターミナル）
+#### ステップ7: Itinerary Agentの起動（新しいターミナル）
+
+```bash
+cd /Users/norihisa/Projects/Panasonic/workshop/A2A/a2a-samples/samples/python/agents/a2a_mcp
+source .venv/bin/activate
+uv run --env-file .env src/a2a_mcp/agents/ --agent-card agent_cards/itinerary_agent.json --port 10106
+```
+
+#### ステップ8: CLIクライアントの実行（新しいターミナル）
 
 すべてのサービスが起動した後（約10秒待機）、CLIクライアントを実行：
 
@@ -140,10 +149,19 @@ uv run --env-file .env src/a2a_mcp/mcp/client.py --resource "resource://agent_ca
 - `logs/airline_agent.log`
 - `logs/hotel_agent.log`
 - `logs/car_rental_agent.log`
+- `logs/itinerary_agent.log`
 
 ## 参考リンク
 
 - [A2A Protocol Documentation](https://github.com/a2aproject/a2a-samples)
 - [Google Generative AI API](https://ai.google.dev/)
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
+
+## 関連ドキュメント
+
+- [README.md](README.md) - プロジェクトの概要とアーキテクチャ
+- [動作マニュアル](OPERATION_MANUAL.md) - 詳細な使用方法とトラブルシューティング
+- [用語解説集](GLOSSARY.md) - A2AとMCPの用語解説
+- [FastAPI解説](FASTAPI_GUIDE.md) - FastAPIの概要と使用方法
+- [A2A SDK解説](A2A_SDK_GUIDE.md) - A2A SDKの詳細な解説
 
